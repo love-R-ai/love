@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陶瓷与发那科机器人专业问答平台</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF', // 科技蓝
+                        secondary: '#F9FAFB', // 陶瓷白
+                        accent: '#F97316', // 橙色强调
+                        dark: '#1F2937', // 深灰
+                        'gray-medium': '#6B7280', // 中灰
+                        'gray-light': '#F3F4F6', // 浅灰
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                }
+            },
+            darkMode: 'class',
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .glass-effect {
+                @apply bg-white/80 dark:bg-dark/80 backdrop-blur-md;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+            }
+            .btn-secondary {
+                @apply bg-secondary hover:bg-secondary/90 text-dark font-medium py-2 px-4 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 focus:outline-none;
+            }
+            .btn-accent {
+                @apply bg-accent hover:bg-accent/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:ring-2 focus:ring-accent/50 focus:outline-none;
+            }
+            .input-field {
+                @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary dark:bg-dark dark:text-white transition-all duration-300;
+            }
+            .tag {
+                @apply inline-block px-3 py-1 text-sm font-medium rounded-full transition-all duration-300;
+            }
+            .tag-ceramic {
+                @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+            }
+            .tag-robot {
+                @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200;
+            }
+            .tag-common {
+                @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-dark dark:text-white min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="sticky top-0 z-50 glass-effect border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center">
+                    <i class="fa fa-comments text-white text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold text-primary hidden sm:block">陶瓷与发那科机器人专业问答</h1>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="hidden md:flex flex-1 max-w-md mx-6">
+                <div class="relative w-full">
+                    <input type="text" id="search-input" placeholder="搜索问题..." class="input-field pl-10">
+                    <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fa fa-moon-o dark:hidden"></i>
+                    <i class="fa fa-sun-o hidden dark:block text-yellow-400"></i>
+                </button>
+                <button id="ask-question-btn" class="btn-accent hidden sm:flex items-center space-x-1">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>提问</span>
+                </button>
+                <button id="mobile-menu-btn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 移动端搜索框 -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <input type="text" id="mobile-search-input" placeholder="搜索问题..." class="input-field pl-10">
+                <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+    </header>
+    
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <nav class="flex flex-col space-y-3">
+                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link active" data-category="all">
+                    <i class="fa fa-th-large w-5 text-center"></i>
+                    <span>全部问题</span>
+                </a>
+                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link" data-category="ceramic">
+                    <i class="fa fa-fire w-5 text-center"></i>
+                    <span>陶瓷相关</span>
+                </a>
+                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link" data-category="robot">
+                    <i class="fa fa-cogs w-5 text-center"></i>
+                    <span>机器人相关</span>
+                </a>
+                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i class="fa fa-star w-5 text-center"></i>
+                    <span>热门问题</span>
+                </a>
+                <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i class="fa fa-bookmark w-5 text-center"></i>
+                    <span>我的收藏</span>
+                </a>
+                <button id="mobile-ask-btn" class="btn-accent flex items-center justify-center space-x-1">
+                    <i class="fa fa-plus-circle"></i>
+                    <span>提问</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <main class="flex-1 container mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+        <!-- 左侧边栏 -->
+        <aside class="hidden md:block w-64 flex-shrink-0">
+            <div class="sticky top-24 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="p-4 bg-primary/10 dark:bg-primary/20 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="font-bold text-lg text-primary">问题分类</h2>
+                </div>
+                <nav class="p-2">
+                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link active" data-category="all">
+                        <i class="fa fa-th-large w-5 text-center"></i>
+                        <span>全部问题</span>
+                        <span class="ml-auto bg-gray-200 dark:bg-gray-700 text-xs px-2 py-1 rounded-full" id="all-count">0</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link" data-category="ceramic">
+                        <i class="fa fa-fire w-5 text-center"></i>
+                        <span>陶瓷相关</span>
+                        <span class="ml-auto bg-blue-100 dark:bg-blue-900 text-xs px-2 py-1 rounded-full" id="ceramic-count">0</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 category-link" data-category="robot">
+                        <i class="fa fa-cogs w-5 text-center"></i>
+                        <span>机器人相关</span>
+                        <span class="ml-auto bg-orange-100 dark:bg-orange-900 text-xs px-2 py-1 rounded-full" id="robot-count">0</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa fa-star w-5 text-center"></i>
+                        <span>热门问题</span>
+                        <span class="ml-auto bg-yellow-100 dark:bg-yellow-900 text-xs px-2 py-1 rounded-full">5</span>
+                    </a>
+                </nav>
+                
+                <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <h3 class="font-semibold mb-3">热门标签</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag tag-ceramic cursor-pointer hover:scale-105" data-tag="成型工艺">成型工艺</span>
+                        <span class="tag tag-ceramic cursor-pointer hover:scale-105" data-tag="烧成技术">烧成技术</span>
+                        <span class="tag tag-ceramic cursor-pointer hover:scale-105" data-tag="釉料配方">釉料配方</span>
+                        <span class="tag tag-robot cursor-pointer hover:scale-105" data-tag="编程操作">编程操作</span>
+                        <span class="tag tag-robot cursor-pointer hover:scale-105" data-tag="维护保养">维护保养</span>
+                        <span class="tag tag-robot cursor-pointer hover:scale-105" data-tag="故障排除">故障排除</span>
+                        <span class="tag tag-common cursor-pointer hover:scale-105" data-tag="自动化">自动化</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 中间主内容 -->
+        <div class="flex-1">
+            <!-- 筛选和排序 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">筛选:</span>
+                    <select id="filter-select" class="input-field text-sm py-1">
+                        <option value="all">全部问题</option>
+                        <option value="unanswered">未解答</option>
+                        <option value="answered">已解答</option>
+                        <option value="popular">热门</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500 dark:text-gray-400">排序:</span>
+                    <select id="sort-select" class="input-field text-sm py-1">
+                        <option value="newest">最新</option>
+                        <option value="oldest">最早</option>
+                        <option value="popular">最热</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 问题列表 -->
+            <div id="questions-container" class="space-y-4">
+                <!-- 问题卡片将通过JavaScript动态生成 -->
+                <div class="animate-pulse flex space-x-4">
+                    <div class="flex-1 space-y-4 py-1">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                        <div class="space-y-2">
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+                            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-24"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 加载更多按钮 -->
+            <div class="mt-6 text-center">
+                <button id="load-more-btn" class="btn-secondary">
+                    <i class="fa fa-refresh mr-2"></i>加载更多
+                </button>
+            </div>
+        </div>
+        
+        <!-- 右侧边栏 -->
+        <aside class="hidden lg:block w-80 flex-shrink-0">
+            <div class="sticky top-24 space-y-6">
+                <!-- 提问卡片 -->
+                <div class="bg-gradient-to-br from-primary to-blue-700 text-white rounded-xl shadow-md overflow-hidden">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">有问题? 我们来解答</h3>
+                        <p class="text-blue-100 mb-4">专业团队为您解答陶瓷和发那科机器人相关问题</p>
+                        <button id="sidebar-ask-btn" class="w-full bg-white text-primary hover:bg-blue-50 font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:ring-2 focus:ring-white/50 focus:outline-none">
+                            <i class="fa fa-plus-circle mr-2"></i>立即提问
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 热门问题 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="font-bold">热门问题</h3>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="question-mini card-hover p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer" data-id="1">
+                            <h4 class="font-medium text-sm line-clamp-2">陶瓷烧成过程中变形的主要原因是什么？如何有效控制？</h4>
+                            <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="tag tag-ceramic text-xs">陶瓷工艺</span>
+                                <span class="ml-auto">32 浏览</span>
+                            </div>
+                        </div>
+                        <div class="question-mini card-hover p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer" data-id="5">
+                            <h4 class="font-medium text-sm line-clamp-2">发那科机器人出现SRVO-062脉冲报警如何处理？</h4>
+                            <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="tag tag-robot text-xs">故障排除</span>
+                                <span class="ml-auto">28 浏览</span>
+                            </div>
+                        </div>
+                        <div class="question-mini card-hover p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer" data-id="3">
+                            <h4 class="font-medium text-sm line-clamp-2">如何优化陶瓷釉料配方以提高产品光泽度？</h4>
+                            <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="tag tag-ceramic text-xs">釉料配方</span>
+                                <span class="ml-auto">24 浏览</span>
+                            </div>
+                        </div>
+                        <div class="question-mini card-hover p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer" data-id="8">
+                            <h4 class="font-medium text-sm line-clamp-2">发那科机器人在陶瓷喷釉应用中的最佳参数设置</h4>
+                            <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="tag tag-common text-xs">自动化应用</span>
+                                <span class="ml-auto">20 浏览</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 资源推荐 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="font-bold">推荐资源</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-300">
+                                <i class="fa fa-file-pdf-o"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium line-clamp-1">陶瓷生产工艺优化指南</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">PDF文档</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-orange-600 dark:text-orange-300">
+                                <i class="fa fa-play-circle-o"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium line-clamp-1">发那科机器人基础操作视频教程</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">视频课程</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 dark:text-green-300">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium line-clamp-1">陶瓷与机器人自动化应用案例集</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">电子书</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+    
+    <!-- 页脚 -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center">
+                        <i class="fa fa-comments text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-primary">陶瓷与发那科机器人专业问答</span>
+                </div>
+                <div class="flex space-x-6 mb-4 md:mb-0">
+                    <a href="#" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">
+                        <i class="fa fa-youtube-play"></i>
+                    </a>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    &copy; 2026 陶瓷与机器人问答平台. 保留所有权利.
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between">
+                <div class="flex flex-wrap gap-4 mb-4 md:mb-0">
+                    <a href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">关于我们</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">使用条款</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">隐私政策</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">常见问题</a>
+                    <a href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors">联系我们</a>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    由 <span class="text-primary">AI技术</span> 提供支持
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- 提问模态框 -->
+    <div id="ask-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">提出您的问题</h3>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="ask-form" class="p-6 space-y-4">
+                    <div>
+                        <label for="question-title" class="block text-sm font-medium mb-1">问题标题 <span class="text-red-500">*</span></label>
+                        <input type="text" id="question-title" class="input-field" placeholder="简明扼要地描述您的问题" required>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">请使用清晰的标题，让专业人士更容易找到并回答</p>
+                    </div>
+                    
+                    <div>
+                        <label for="question-category" class="block text-sm font-medium mb-1">问题分类 <span class="text-red-500">*</span></label>
+                        <select id="question-category" class="input-field" required>
+                            <option value="">请选择分类</option>
+                            <option value="ceramic">陶瓷相关</option>
+                            <option value="robot">发那科机器人相关</option>
+                            <option value="common">两者结合应用</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="question-content" class="block text-sm font-medium mb-1">问题详情 <span class="text-red-500">*</span></label>
+                        <textarea id="question-content" rows="6" class="input-field" placeholder="详细描述您的问题，包括具体情况、已尝试的解决方法等" required></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">提供更多细节有助于获得更准确的回答</p>
+                    </div>
+                    
+                    <div>
+                        <label for="question-tags" class="block text-sm font-medium mb-1">标签</label>
+                        <input type="text" id="question-tags" class="input-field" placeholder="添加相关标签，用逗号分隔">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">例如: 成型工艺, 烧成技术, 故障排除</p>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" id="cancel-ask" class="btn-secondary">取消</button>
+                        <button type="submit" class="btn-accent">
+                            <i class="fa fa-paper-plane mr-2"></i>提交问题
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 问题详情模态框 -->
+    <div id="question-detail-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slide-up">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 id="detail-title" class="text-xl font-bold"></h3>
+                    <button id="close-detail-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div id="detail-category-badge" class="tag"></div>
+                        <span id="detail-date" class="text-sm text-gray-500 dark:text-gray-400"></span>
+                        <div class="ml-auto flex items-center space-x-4">
+                            <button class="flex items-center space-x-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                <i class="fa fa-thumbs-up"></i>
+                                <span id="detail-likes">0</span>
+                            </button>
+                            <button class="flex items-center space-x-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                <i class="fa fa-bookmark-o"></i>
+                                <span>收藏</span>
+                            </button>
+                            <button class="flex items-center space-x-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                <i class="fa fa-share-alt"></i>
+                                <span>分享</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="detail-content" class="prose dark:prose-invert max-w-none mb-6"></div>
+                    
+                    <div id="detail-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                    
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <h4 class="text-lg font-semibold mb-4">专业解答</h4>
+                        <div id="answer-container" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 mb-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-2">
+                                        <h5 class="font-medium">专业解答团队</h5>
+                                        <span class="ml-2 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-0.5 rounded-full">认证专家</span>
+                                    </div>
+                                    <div id="answer-content" class="prose dark:prose-invert max-w-none"></div>
+                                    <div class="flex items-center mt-4 text-sm text-gray-500 dark:text-gray-400">
+                                        <span id="answer-date"></span>
+                                        <div class="ml-auto flex items-center space-x-4">
+                                            <button class="flex items-center space-x-1 hover:text-primary">
+                                                <i class="fa fa-thumbs-up"></i>
+                                                <span id="answer-likes">0</span>
+                                            </button>
+                                            <button class="flex items-center space-x-1 hover:text-primary">
+                                                <i class="fa fa-comment-o"></i>
+                                                <span>评论</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+                            <h4 class="text-lg font-semibold mb-4">相关问题推荐</h4>
+                            <div id="related-questions" class="space-y-4">
+                                <!-- 相关问题将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // 问题数据
+        const questionsData = [
+            {
+                id: 1,
+                title: "陶瓷烧成过程中变形的主要原因是什么？如何有效控制？",
+                content: "我们工厂在生产陶瓷产品时，经常遇到烧成后产品变形的问题，特别是一些较大尺寸的盘子和碗。变形导致产品合格率下降，增加了生产成本。请问专家，烧成过程中变形的主要原因是什么？有哪些有效的控制措施可以减少变形问题？",
+                category: "ceramic",
+                categoryName: "陶瓷相关",
+                tags: ["烧成技术", "变形控制", "温度曲线"],
+                date: "2026-03-10",
+                views: 128,
+                likes: 15,
+                answers: 2,
+                answered: true,
+                answer: {
+                    content: `<p>陶瓷烧成过程中的变形是一个常见但复杂的问题，主要由以下几个因素引起：</p>
+                    
+                    <h5>1. 温度分布不均匀</h5>
+                    <p>窑炉内温度分布不均是导致变形的主要原因之一。当产品不同部位受热不均时，会产生热应力差异，导致变形。</p>
+                    
+                    <h5>2. 装窑方式不合理</h5>
+                    <p>装窑密度过大、匣钵柱排列不整齐、垫片不平整等都会影响热气流的均匀分布，导致产品受热不均。</p>
+                    
+                    <h5>3. 升温速率控制不当</h5>
+                    <p>升温过快会导致坯体内外温差过大，产生应力；升温过慢则会延长烧成周期，影响生产效率。</p>
+                    
+                    <h5>4. 坯体配方问题</h5>
+                    <p>坯体中各成分的热膨胀系数不匹配，或可塑性不合适，也会导致烧成过程中的变形。</p>
+                    
+                    <h5>有效的控制措施：</h5>
+                    <ul>
+                        <li><strong>优化窑炉设计</strong>：确保窑内温度均匀分布，可通过增加温度监测点和调整烧嘴位置实现。</li>
+                        <li><strong>改进装窑工艺</strong>：合理控制装窑密度，确保匣钵柱垂直，使用平整的垫片。</li>
+                        <li><strong>优化烧成曲线</strong>：根据产品尺寸和厚度，制定合适的升温速率和保温时间。对于大型产品，应适当降低升温速率，并在关键温度段增加保温时间。</li>
+                        <li><strong>调整坯体配方</strong>：选择热膨胀系数匹配的原料，控制坯体的可塑性和干燥收缩率。</li>
+                        <li><strong>使用高温支撑材料</strong>：对于大型或薄型产品，可使用高温支撑材料减少变形。</li>
+                    </ul>
+                    
+                    <p>建议您首先对窑炉内的温度分布进行测试，找出温度不均匀的区域，然后针对性地调整烧嘴和挡板。同时，记录不同产品的烧成曲线和变形情况，通过数据分析找出最佳烧成制度。</p>`,
+                    date: "2026-03-11",
+                    likes: 23
+                }
+            },
+            {
+                id: 2,
+                title: "发那科机器人R-30iB控制器如何进行系统备份和恢复？",
+                content: "我们工厂使用了多台发那科机器人，型号为R-2000iC，配备R-30iB控制器。为了防止系统故障导致生产中断，我们需要定期进行系统备份。请问如何正确地进行系统备份？备份文件应该如何存储和管理？如果系统出现问题，如何从备份中恢复？",
+                category: "robot",
+                categoryName: "发那科机器人相关",
+                tags: ["系统维护", "备份恢复", "R-30iB控制器"],
+                date: "2026-03-08",
+                views: 95,
+                likes: 8,
+                answers: 1,
+                answered: true,
+                answer: {
+                    content: `<p>发那科R-30iB控制器的系统备份和恢复是确保机器人系统安全的重要操作，以下是详细步骤：</p>
+                    
+                    <h5>系统备份步骤：</h5>
+                    <ol>
+                        <li><strong>准备存储设备</strong>：使用FAT32格式的USB存储设备，建议容量不小于4GB。</li>
+                        <li><strong>进入备份界面</strong>：
+                            <ul>
+                                <li>在示教器上按下"MENUS"键</li>
+                                <li>选择"SYSTEM"菜单</li>
+                                <li>按下F1(TYPE)键，选择"FILE"</li>
+                                <li>按下F3(BACKUP)键</li>
+                            </ul>
+                        </li>
+                        <li><strong>选择备份内容</strong>：
+                            <ul>
+                                <li>TP程序：所有示教程序</li>
+                                <li>系统程序：系统软件</li>
+                                <li>系统配置：参数设置</li>
+                                <li>I/O配置：输入输出设置</li>
+                                <li>工具数据：TCP设置等</li>
+                            </ul>
+                        </li>
+                        <li><strong>执行备份</strong>：选择USB设备作为目标位置，输入备份文件名，按下"ENTER"键开始备份。</li>
+                    </ol>
+                    
+                    <h5>备份文件管理：</h5>
+                    <ul>
+                        <li>创建专门的备份文件夹，按日期命名</li>
+                        <li>保留至少3个不同时间点的备份</li>
+                        <li>定期检查备份文件的完整性</li>
+                        <li>将重要备份复制到安全的服务器或云端存储</li>
+                    </ul>
+                    
+                    <h5>系统恢复步骤：</h5>
+                    <ol>
+                        <li><strong>准备恢复设备</strong>：将包含备份文件的USB设备连接到控制器。</li>
+                        <li><strong>进入恢复界面</strong>：
+                            <ul>
+                                <li>在示教器上按下"MENUS"键</li>
+                                <li>选择"SYSTEM"菜单</li>
+                                <li>按下F1(TYPE)键，选择"FILE"</li>
+                                <li>按下F4(RESTORE)键</li>
+                            </ul>
+                        </li>
+                        <li><strong>选择恢复内容</strong>：根据需要选择要恢复的内容。</li>
+                        <li><strong>执行恢复</strong>：选择USB设备上的备份文件，按下"ENTER"键开始恢复。</li>
+                        <li><strong>重启系统</strong>：恢复完成后，重启控制器使设置生效。</li>
+                    </ol>
+                    
+                    <p>注意事项：</p>
+                    <ul>
+                        <li>备份和恢复操作应在机器人停止生产时进行</li>
+                        <li>恢复前确保备份文件与当前系统版本兼容</li>
+                        <li>恢复后应进行功能测试，确保系统正常运行</li>
+                        <li>建议每月至少进行一次完整备份</li>
+                    </ul>`,
+                    date: "2026-03-09",
+                    likes: 15
+                }
+            },
+            {
+                id: 3,
+                title: "如何优化陶瓷釉料配方以提高产品光泽度？",
+                content: "我们是一家生产日用陶瓷的企业，最近客户反馈我们的产品光泽度不够理想。我们使用的是传统釉料配方，主要成分为长石、石英、石灰石和粘土。请问如何调整釉料配方才能提高产品的光泽度？是否需要添加特殊的釉料添加剂？",
+                category: "ceramic",
+                categoryName: "陶瓷相关",
+                tags: ["釉料配方", "光泽度", "日用陶瓷"],
+                date: "2026-03-05",
+                views: 87,
+                likes: 12,
+                answers: 1,
+                answered: true,
+                answer: {
+                    content: `<p>釉面光泽度是评价陶瓷产品外观质量的重要指标，提高光泽度需要从釉料配方、烧成制度等多方面综合考虑：</p>
+                    
+                    <h5>釉料配方调整：</h5>
+                    <ol>
+                        <li><strong>增加 fluxes 含量</strong>：
+                            <ul>
+                                <li>适当提高长石含量（可增加10-15%）</li>
+                                <li>添加锂辉石、透辉石等助熔剂</li>
+                                <li>引入少量硼砂或硼酸（1-3%）</li>
+                            </ul>
+                        </li>
+                        <li><strong>调整SiO₂/Al₂O₃比例</strong>：
+                            <ul>
+                                <li>提高SiO₂含量可增加釉面光泽</li>
+                                <li>SiO₂/Al₂O₃比例建议在4.5-6.0之间</li>
+                            </ul>
+                        </li>
+                        <li><strong>添加特殊氧化物</strong>：
+                            <ul>
+                                <li>氧化锌（1-3%）：显著提高光泽度</li>
+                                <li>氧化镁（1-2%）：改善釉面平滑度</li>
+                                <li>氧化锆（2-4%）：提高釉面硬度和光泽</li>
+                            </ul>
+                        </li>
+                        <li><strong>控制釉料细度</strong>：
+                            <ul>
+                                <li>球磨时间延长20-30%</li>
+                                <li>确保90%以上颗粒小于20μm</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <h5>釉料添加剂：</h5>
+                    <ul>
+                        <li><strong>玻璃粉</strong>：添加5-10%的低熔点玻璃粉可显著提高光泽度</li>
+                        <li><strong>锆英粉</strong>：适量添加可提高釉面白度和光泽</li>
+                        <li><strong>硅酸锆</strong>：改善釉面平滑度和光泽</li>
+                    </ul>
+                    
+                    <h5>烧成制度优化：</h5>
+                    <ul>
+                        <li>适当提高烧成温度（10-20℃）</li>
+                        <li>延长高温保温时间（15-30分钟）</li>
+                        <li>控制冷却速度，特别是在釉料软化点以下的冷却</li>
+                    </ul>
+                    
+                    <h5>施釉工艺改进：</h5>
+                    <ul>
+                        <li>增加釉层厚度（0.3-0.5mm）</li>
+                        <li>优化釉浆浓度（比重控制在1.7-1.8g/cm³）</li>
+                        <li>使用振动施釉或压力施釉等先进工艺</li>
+                    </ul>
+                    
+                    <p>建议您先进行小批量试验，逐步调整配方成分，记录不同配方的光泽度变化，找到最适合您产品的釉料配方。同时，注意釉料与坯体的膨胀系数匹配，避免出现釉裂或剥釉问题。</p>`,
+                    date: "2026-03-06",
+                    likes: 18
+                }
+            },
+            {
+                id: 4,
+                title: "发那科机器人在陶瓷喷釉应用中如何设置最佳轨迹？",
+                content: "我们工厂最近引入了两台发那科R-2000iC机器人用于陶瓷产品的自动喷釉。但是我们发现，对于复杂形状的产品，如茶壶和花瓶，机器人喷釉的均匀度不够理想。请问如何设置机器人的最佳运动轨迹，以确保釉面均匀覆盖？有哪些参数需要特别注意调整？",
+                category: "common",
+                categoryName: "两者结合应用",
+                tags: ["自动喷釉", "轨迹规划", "工艺参数"],
+                date: "2026-03-03",
+                views: 76,
+                likes: 9,
+                answers: 0,
+                answered: false
+            },
+            {
+                id: 5,
+                title: "发那科机器人出现SRVO-062脉冲报警如何处理？",
+                content: "我们工厂的一台发那科机器人在运行过程中突然出现SRVO-062脉冲报警，导致机器人停止工作。我们尝试重启控制器，但报警仍然存在。请问这个报警是什么原因引起的？应该如何处理才能恢复机器人的正常运行？",
+                category: "robot",
+                categoryName: "发那科机器人相关",
+                tags: ["故障排除", "脉冲报警", "系统维护"],
+                date: "2026-03-01",
+                views: 112,
+                likes: 14,
+                answers: 1,
+                answered: true,
+                answer: {
+                    content: `<p>SRVO-062脉冲报警是发那科机器人常见的故障之一，通常表示脉冲编码器计数与控制器预期值不匹配。以下是详细的故障原因分析和处理步骤：</p>
+                    
+                    <h5>故障原因：</h5>
+                    <ol>
+                        <li><strong>电池电量不足</strong>：脉冲编码器电池电量耗尽，导致位置数据丢失</li>
+                        <li><strong>编码器连接问题</strong>：编码器电缆松动、破损或接触不良</li>
+                        <li><strong>伺服放大器故障</strong>：伺服放大器无法正确读取编码器数据</li>
+                        <li><strong>机械故障</strong>：机器人关节受到外力碰撞，导致位置偏移</li>
+                        <li><strong>电磁干扰</strong>：周围设备产生的电磁干扰影响编码器信号</li>
+                    </ol>
+                    
+                    <h5>处理步骤：</h5>
+                    <ol>
+                        <li><strong>安全检查</strong>：
+                            <ul>
+                                <li>确保机器人处于安全状态，按下急停按钮</li>
+                                <li>检查机器人周围是否有障碍物或碰撞痕迹</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>电池检查与更换</strong>：
+                            <ul>
+                                <li>关闭控制器电源</li>
+                                <li>打开控制器前门，找到脉冲编码器电池（通常为3V锂电池）</li>
+                                <li>记录电池型号，更换新电池（注意：更换过程中不要断电）</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>编码器校准</strong>：
+                            <ul>
+                                <li>打开控制器电源</li>
+                                <li>在示教器上按下"MENUS"键</li>
+                                <li>选择"SYSTEM"菜单</li>
+                                <li>按下F1(TYPE)键，选择"Master/Cal"</li>
+                                <li>按下F3(RES_PCA)键，然后按下F4(YES)确认</li>
+                                <li>系统将自动重新校准脉冲编码器</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>检查编码器连接</strong>：
+                            <ul>
+                                <li>关闭控制器电源</li>
+                                <li>检查机器人各轴编码器电缆连接是否牢固</li>
+                                <li>检查电缆是否有破损或磨损</li>
+                                <li>重新连接松动的连接器</li>
+                            </ul>
+                        </li>
+                        
+                        <li><strong>测试运行</strong>：
+                            <ul>
+                                <li>打开控制器电源</li>
+                                <li>将机器人切换到T1模式</li>
+                                <li>手动移动机器人各轴，检查是否有异常</li>
+                                <li>运行简单程序，确认机器人动作正常</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <h5>预防措施：</h5>
+                    <ul>
+                        <li>定期检查并更换脉冲编码器电池（建议每1-2年更换一次）</li>
+                        <li>建立机器人维护日志，记录报警历史和处理方法</li>
+                        <li>避免机器人受到外力碰撞</li>
+                        <li>确保控制器接地良好，减少电磁干扰</li>
+                    </ul>
+                    
+                    <p>如果以上方法无法解决问题，建议联系发那科技术支持或专业维修人员进行进一步检查和维修。</p>`,
+                    date: "2026-03-02",
+                    likes: 22
+                }
+            },
+            {
+                id: 6,
+                title: "陶瓷原料球磨过程中如何控制细度和均匀度？",
+                content: "我们工厂在陶瓷原料球磨过程中经常遇到细度不均匀的问题，导致后续成型和烧成工序出现质量波动。我们使用的是传统的间歇式球磨机，请问如何优化球磨工艺参数，以获得更均匀的细度？球磨机的装载量、转速和球料比等参数应如何调整？",
+                category: "ceramic",
+                categoryName: "陶瓷相关",
+                tags: ["原料处理", "球磨工艺", "细度控制"],
+                date: "2026-02-28",
+                views: 65,
+                likes: 7,
+                answers: 0,
+                answered: false
+            },
+            {
+                id: 7,
+                title: "发那科机器人如何实现与陶瓷生产线的自动化集成？",
+                content: "我们计划对现有陶瓷生产线进行自动化改造，引入发那科机器人来替代部分人工操作。请问如何将机器人与现有的PLC控制系统和生产线设备进行集成？需要哪些硬件和软件接口？集成过程中需要注意哪些问题？",
+                category: "common",
+                categoryName: "两者结合应用",
+                tags: ["系统集成", "自动化改造", "PLC通信"],
+                date: "2026-02-25",
+                views: 83,
+                likes: 11,
+                answers: 0,
+                answered: false
+            },
+            {
+                id: 8,
+                title: "发那科机器人在陶瓷喷釉应用中的最佳参数设置",
+                content: "我们工厂使用发那科机器人进行陶瓷产品的自动喷釉，但一直没有找到最佳的参数设置。请问对于不同类型的陶瓷产品（如餐具、卫浴用品等），机器人的喷釉参数（如喷雾压力、移动速度、距离等）应该如何设置？有什么经验值可以参考吗？",
+                category: "common",
+                categoryName: "两者结合应用",
+                tags: ["自动喷釉", "参数优化", "工艺调整"],
+                date: "2026-02-22",
+                views: 91,
+                likes: 13,
+                answers: 1,
+                answered: true,
+                answer: {
+                    content: `<p>发那科机器人在陶瓷喷釉应用中的参数设置需要根据产品类型、釉料特性和质量要求进行优化。以下是针对不同陶瓷产品的最佳参数设置建议：</p>
+                    
+                    <h5>1. 日用陶瓷（餐具、杯子等）</h5>
+                    <table class="min-w-full border border-gray-300 dark:border-gray-600">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">参数</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">建议值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷雾压力</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.2-0.3 MPa</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">机器人移动速度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">200-300 mm/s</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷枪距离工件</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">150-200 mm</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉浆流量</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">300-500 ml/min</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉层厚度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.2-0.3 mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>2. 卫浴陶瓷（马桶、面盆等）</h5>
+                    <table class="min-w-full border border-gray-300 dark:border-gray-600 mt-4">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">参数</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">建议值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷雾压力</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.3-0.4 MPa</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">机器人移动速度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">150-250 mm/s</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷枪距离工件</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">200-250 mm</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉浆流量</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">500-800 ml/min</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉层厚度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.3-0.5 mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>3. 艺术陶瓷（花瓶、装饰品等）</h5>
+                    <table class="min-w-full border border-gray-300 dark:border-gray-600 mt-4">
+                        <thead>
+                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">参数</th>
+                                <th class="border border-gray-300 dark:border-gray-600 px-4 py-2">建议值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷雾压力</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.15-0.25 MPa</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">机器人移动速度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">100-200 mm/s</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">喷枪距离工件</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">120-180 mm</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉浆流量</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">200-400 ml/min</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">釉层厚度</td>
+                                <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0.15-0.25 mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h5>轨迹规划建议：</h5>
+                    <ul>
+                        <li><strong>复杂形状产品</strong>：采用螺旋式或蛇形轨迹，确保覆盖所有表面</li>
+                        <li><strong>凹凸表面</strong>：根据表面曲率调整机器人速度和喷枪角度</li>
+                        <li><strong>边缘处理</strong>：在边缘区域适当降低速度，增加停留时间</li>
+                        <li><strong>重叠区域</strong>：轨迹重叠率控制在10-20%，避免釉层过厚</li>
+                    </ul>
+                    
+                    <h5>釉料特性考虑：</h5>
+                    <ul>
+                        <li><strong>高粘度釉料</strong>：增加喷雾压力，降低移动速度</li>
+                        <li><strong>低粘度釉料</strong>：降低喷雾压力，增加移动速度</li>
+                        <li><strong>易沉淀釉料</strong>：增加搅拌频率，使用循环系统</li>
+                    </ul>
+                    
+                    <p>建议您通过以下步骤优化参数：</p>
+                    <ol>
+                        <li>从上述推荐参数开始，进行小批量试验</li>
+                        <li>使用釉层厚度测量仪检测不同参数下的釉层厚度</li>
+                        <li>记录并分析烧成后的釉面质量</li>
+                        <li>逐步调整参数，直到获得满意的效果</li>
+                    </ol>
+                    
+                    <p>最后，建议定期清洁和维护喷枪，确保喷雾均匀稳定。同时，保持釉浆温度和浓度的稳定也是获得均匀釉面的关键因素。</p>`,
+                    date: "2026-02-23",
+                    likes: 19
+                }
+            },
+            {
+                id: 9,
+                title: "陶瓷生产中如何减少釉面针孔缺陷？",
+                content: "我们工厂生产的陶瓷产品经常出现釉面针孔缺陷，特别是在大件产品上更为明显。这些针孔严重影响了产品的外观质量和光泽度。请问釉面针孔形成的主要原因是什么？有哪些有效的方法可以减少或消除针孔缺陷？",
+                category: "ceramic",
+                categoryName: "陶瓷相关",
+                tags: ["缺陷控制", "釉面质量", "烧成工艺"],
+                date: "2026-02-20",
+                views: 72,
+                likes: 8,
+                answers: 0,
+                answered: false
+            },
+            {
+                id: 10,
+                title: "发那科机器人如何实现陶瓷产品的自动分拣？",
+                content: "我们工厂希望实现陶瓷产品的自动分拣，将不同规格、不同质量等级的产品分开。请问如何使用发那科机器人结合视觉系统实现自动分拣？需要哪些硬件设备和软件配置？如何编写分拣程序？",
+                category: "common",
+                categoryName: "两者结合应用",
+                tags: ["自动分拣", "视觉系统", "机器人编程"],
+                date: "2026-02-18",
+                views: 68,
+                likes: 6,
+                answers: 0,
+                answered: false
+            }
+        ];
+        
+        // DOM元素
+        const questionsContainer = document.getElementById('questions-container');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const themeToggle = document.getElementById('theme-toggle');
+        const askQuestionBtn = document.getElementById('ask-question-btn');
+        const mobileAskBtn = document.getElementById('mobile-ask-btn');
+        const sidebarAskBtn = document.getElementById('sidebar-ask-btn');
+        const askModal = document.getElementById('ask-modal');
+        const closeModal = document.getElementById('close-modal');
+        const cancelAsk = document.getElementById('cancel-ask');
+        const askForm = document.getElementById('ask-form');
+        const questionDetailModal = document.getElementById('question-detail-modal');
+        const closeDetailModal = document.getElementById('close-detail-modal');
+        const searchInput = document.getElementById('search-input');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const filterSelect = document.getElementById('filter-select');
+        const sortSelect = document.getElementById('sort-select');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const categoryLinks = document.querySelectorAll('.category-link');
+        const tagElements = document.querySelectorAll('.tag');
+        const questionMiniElements = document.querySelectorAll('.question-mini');
+        
+        // 初始化
+        let currentCategory = 'all';
+        let currentFilter = 'all';
+        let currentSort = 'newest';
+        let currentSearch = '';
+        let displayedQuestions = 5;
+        const questionsPerLoad = 5;
+        
+        // 检查主题偏好
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            updateCategoryCounts();
+        });
+        
+        // 渲染问题列表
+        function renderQuestions() {
+            // 过滤和排序问题
+            let filteredQuestions = [...questionsData];
+            
+            // 按分类过滤
+            if (currentCategory !== 'all') {
+                filteredQuestions = filteredQuestions.filter(q => q.category === currentCategory);
+            }
+            
+            // 按搜索词过滤
+            if (currentSearch) {
+                const searchLower = currentSearch.toLowerCase();
+                filteredQuestions = filteredQuestions.filter(q => 
+                    q.title.toLowerCase().includes(searchLower) || 
+                    q.content.toLowerCase().includes(searchLower) ||
+                    q.tags.some(tag => tag.toLowerCase().includes(searchLower))
+                );
+            }
+            
+            // 按状态过滤
+            if (currentFilter === 'answered') {
+                filteredQuestions = filteredQuestions.filter(q => q.answered);
+            } else if (currentFilter === 'unanswered') {
+                filteredQuestions = filteredQuestions.filter(q => !q.answered);
+            }
+            
+            // 排序
+            if (currentSort === 'newest') {
+                filteredQuestions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (currentSort === 'oldest') {
+                filteredQuestions.sort((a, b) => new Date(a.date) - new Date(b.date));
+            } else if (currentSort === 'popular') {
+                filteredQuestions.sort((a, b) => b.views - a.views);
+            }
+            
+            // 限制显示数量
+            const questionsToShow = filteredQuestions.slice(0, displayedQuestions);
+            
+            // 清空容器
+            questionsContainer.innerHTML = '';
+            
+            // 如果没有问题
+            if (questionsToShow.length === 0) {
+                questionsContainer.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center">
+                        <i class="fa fa-search text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                        <h3 class="text-lg font-semibold mb-2">未找到相关问题</h3>
+                        <p class="text-gray-500 dark:text-gray-400 mb-4">尝试调整搜索条件或提问新问题</p>
+                        <button id="new-search-ask-btn" class="btn-accent">
+                            <i class="fa fa-plus-circle mr-2"></i>提问
+                        </button>
+                    </div>
+                `;
+                
+                // 添加事件监听器
+                document.getElementById('new-search-ask-btn').addEventListener('click', openAskModal);
+                return;
+            }
+            
+            // 渲染问题卡片
+            questionsToShow.forEach(question => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden card-hover';
+                questionCard.dataset.id = question.id;
+                
+                // 确定标签样式
+                let tagClass = 'tag-common';
+                if (question.category === 'ceramic') {
+                    tagClass = 'tag-ceramic';
+                } else if (question.category === 'robot') {
+                    tagClass = 'tag-robot';
+                }
+                
+                questionCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="tag ${tagClass}">${question.categoryName}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400">${formatDate(question.date)}</span>
+                            </div>
+                            <div class="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fa fa-eye"></i>
+                                <span>${question.views}</span>
+                            </div>
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold mb-3 cursor-pointer question-title">${question.title}</h3>
+                        
+                        <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">${question.content}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${question.tags.map(tag => `<span class="tag ${tagClass} text-xs">${tag}</span>`).join('')}
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center space-x-4">
+                                <button class="flex items-center space-x-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                    <i class="fa fa-thumbs-up"></i>
+                                    <span>${question.likes}</span>
+                                </button>
+                                <button class="flex items-center space-x-1 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                    <i class="fa fa-comment-o"></i>
+                                    <span>${question.answers}</span>
+                                </button>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <button class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                    <i class="fa fa-bookmark-o"></i>
+                                </button>
+                                <button class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary">
+                                    <i class="fa fa-share-alt"></i>
+                                </button>
+                                <button class="btn-primary text-sm py-1 px-3 question-detail-btn">
+                                    查看详情
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+                
+                // 添加事件监听器
+                const titleElement = questionCard.querySelector('.question-title');
+                const detailBtn = questionCard.querySelector('.question-detail-btn');
+                
+                titleElement.addEventListener('click', () => openQuestionDetail(question.id));
+                detailBtn.addEventListener('click', () => openQuestionDetail(question.id));
+            });
+            
+            // 更新加载更多按钮状态
+            if (filteredQuestions.length <= displayedQuestions) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'inline-block';
+            }
+        }
+        
+        // 打开问题详情
+        function openQuestionDetail(id) {
+            const question = questionsData.find(q => q.id === id);
+            if (!question) return;
+            
+            // 更新浏览量
+            question.views += 1;
+            
+            // 填充详情内容
+            document.getElementById('detail-title').textContent = question.title;
+            document.getElementById('detail-content').innerHTML = `<p>${question.content.replace(/\n/g, '</p><p>')}</p>`;
+            document.getElementById('detail-date').textContent = formatDate(question.date);
+            document.getElementById('detail-likes').textContent = question.likes;
+            
+            // 设置分类标签
+            const categoryBadge = document.getElementById('detail-category-badge');
+            categoryBadge.textContent = question.categoryName;
+            
+            if (question.category === 'ceramic') {
+                categoryBadge.className = 'tag tag-ceramic';
+            } else if (question.category === 'robot') {
+                categoryBadge.className = 'tag tag-robot';
+            } else {
+                categoryBadge.className = 'tag tag-common';
+            }
+            
+            // 设置标签
+            const tagsContainer = document.getElementById('detail-tags');
+            tagsContainer.innerHTML = '';
+            
+            question.tags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = `tag ${categoryBadge.className.split(' ')[1]}`;
+                tagElement.textContent = tag;
+                tagsContainer.appendChild(tagElement);
+            });
+            
+            // 设置回答内容
+            const answerContainer = document.getElementById('answer-container');
+            if (question.answered && question.answer) {
+                document.getElementById('answer-content').innerHTML = question.answer.content;
+                document.getElementById('answer-date').textContent = `回答于 ${formatDate(question.answer.date)}`;
+                document.getElementById('answer-likes').textContent = question.answer.likes;
+                answerContainer.style.display = 'block';
+            } else {
+                answerContainer.style.display = 'none';
+            }
+            
+            // 设置相关问题
+            const relatedQuestionsContainer = document.getElementById('related-questions');
+            relatedQuestionsContainer.innerHTML = '';
+            
+            // 获取相关问题（同类别，排除当前问题）
+            const relatedQuestions = questionsData
+                .filter(q => q.category === question.category && q.id !== question.id)
+                .slice(0, 3);
+            
+            if (relatedQuestions.length === 0) {
+                relatedQuestionsContainer.innerHTML = `
+                    <div class="text-center py-4 text-gray-500 dark:text-gray-400">
+                        暂无相关问题推荐
+                    </div>
+                `;
+            } else {
+                relatedQuestions.forEach(q => {
+                    const relatedQuestionElement = document.createElement('div');
+                    relatedQuestionElement.className = 'flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer';
+                    relatedQuestionElement.dataset.id = q.id;
+                    
+                    relatedQuestionElement.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                            <i class="fa fa-question"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-medium text-sm line-clamp-2">${q.title}</h5>
+                            <div class="flex items-center mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                <span>${q.answers} 个回答</span>
+                                <span class="mx-2">•</span>
+                                <span>${q.views} 次浏览</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    relatedQuestionsContainer.appendChild(relatedQuestionElement);
+                    
+                    // 添加事件监听器
+                    relatedQuestionElement.addEventListener('click', () => {
+                        // 关闭当前模态框
+                        questionDetailModal.classList.add('hidden');
+                        // 打开新问题详情
+                        setTimeout(() => openQuestionDetail(q.id), 300);
+                    });
+                });
+            }
+            
+            // 显示模态框
+            questionDetailModal.classList.remove('hidden');
+        }
+        
+        // 打开提问模态框
+        function openAskModal() {
+            askModal.classList.remove('hidden');
+            document.getElementById('question-title').focus();
+        }
+        
+        // 关闭提问模态框
+        function closeAskModal() {
+            askModal.classList.add('hidden');
+            askForm.reset();
+        }
+        
+        // 提交问题
+        function submitQuestion(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('question-title').value.trim();
+            const category = document.getElementById('question-category').value;
+            const content = document.getElementById('question-content').value.trim();
+            const tagsInput = document.getElementById('question-tags').value.trim();
+            
+            // 验证表单
+            if (!title || !category || !content) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 处理标签
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            // 获取分类名称
+            let categoryName = '两者结合应用';
+            if (category === 'ceramic') {
+                categoryName = '陶瓷相关';
+            } else if (category === 'robot') {
+                categoryName = '发那科机器人相关';
+            }
+            
+            // 创建新问题
+            const newQuestion = {
+                id: questionsData.length + 1,
+                title,
+                content,
+                category,
+                categoryName,
+                tags: tags.length > 0 ? tags : ['未分类'],
+                date: new Date().toISOString().split('T')[0],
+                views: 0,
+                likes: 0,
+                answers: 0,
+                answered: false
+            };
+            
+            // 添加到数据中
+            questionsData.unshift(newQuestion);
+            
+            // 更新界面
+            closeAskModal();
+            renderQuestions();
+            updateCategoryCounts();
+            
+            // 显示成功消息
+            alert('问题提交成功！');
+        }
+        
+        // 更新分类计数
+        function updateCategoryCounts() {
+            const allCount = questionsData.length;
+            const ceramicCount = questionsData.filter(q => q.category === 'ceramic').length;
+            const robotCount = questionsData.filter(q => q.category === 'robot').length;
+            
+            document.getElementById('all-count').textContent = allCount;
+            document.getElementById('ceramic-count').textContent = ceramicCount;
+            document.getElementById('robot-count').textContent = robotCount;
+        }
+        
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 0) {
+                return '今天';
+            } else if (diffDays === 1) {
+                return '昨天';
+            } else if (diffDays < 7) {
+                return `${diffDays}天前`;
+            } else {
+                return date.toLocaleDateString('zh-CN');
+            }
+        }
+        
+        // 事件监听器
+        
+        // 移动端菜单
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 主题切换
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // 提问按钮
+        askQuestionBtn.addEventListener('click', openAskModal);
+        mobileAskBtn.addEventListener('click', openAskModal);
+        sidebarAskBtn.addEventListener('click', openAskModal);
+        
+        // 关闭提问模态框
+        closeModal.addEventListener('click', closeAskModal);
+        cancelAsk.addEventListener('click', closeAskModal);
+        
+        // 提交问题
+        askForm.addEventListener('submit', submitQuestion);
+        
+        // 关闭问题详情模态框
+        closeDetailModal.addEventListener('click', () => {
+            questionDetailModal.classList.add('hidden');
+        });
+        
+        // 搜索
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            displayedQuestions = 5;
+            renderQuestions();
+        });
+        
+        mobileSearchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            displayedQuestions = 5;
+            renderQuestions();
+        });
+        
+        // 筛选
+        filterSelect.addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            displayedQuestions = 5;
+            renderQuestions();
+        });
+        
+        // 排序
+        sortSelect.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            displayedQuestions = 5;
+            renderQuestions();
+        });
+        
+        // 加载更多
+        loadMoreBtn.addEventListener('click', () => {
+            displayedQuestions += questionsPerLoad;
+            renderQuestions();
+        });
+        
+        // 分类切换
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // 移除所有活动状态
+                categoryLinks.forEach(l => l.classList.remove('active', 'bg-primary/10', 'text-primary'));
+                
+                // 添加活动状态
+                link.classList.add('active', 'bg-primary/10', 'text-primary');
+                
+                // 更新当前分类
+                currentCategory = link.dataset.category;
+                displayedQuestions = 5;
+                renderQuestions();
+                
+                // 关闭移动端菜单
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // 标签点击
+        tagElements.forEach(tag => {
+            tag.addEventListener('click', () => {
+                const tagText = tag.textContent;
+                currentSearch = tagText;
+                searchInput.value = tagText;
+                mobileSearchInput.value = tagText;
+                displayedQuestions = 5;
+                renderQuestions();
+            });
+        });
+        
+        // 热门问题点击
+        questionMiniElements.forEach(element => {
+            element.addEventListener('click', () => {
+                const id = parseInt(element.dataset.id);
+                openQuestionDetail(id);
+            });
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === askModal) {
+                closeAskModal();
+            }
+            if (e.target === questionDetailModal) {
+                questionDetailModal.classList.add('hidden');
+            }
+        });
+        
+        // 键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAskModal();
+                questionDetailModal.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
